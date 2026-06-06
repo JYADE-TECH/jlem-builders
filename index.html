@@ -89,6 +89,24 @@
     }
     .nav-cta:hover { border-color: var(--white); background: var(--white); color: var(--black); }
 
+    .nav-brand-link {
+      display: inline-flex; align-items: center;
+      text-decoration: none; color: inherit;
+      transition: opacity 0.2s;
+    }
+    .nav-brand-link:hover { opacity: 0.75; }
+
+    .nav-fb {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px;
+      border: 1px solid var(--g6);
+      color: var(--g3);
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+    .nav-fb:hover { border-color: var(--white); color: var(--white); background: rgba(255,255,255,0.05); }
+    .nav-fb svg { width: 14px; height: 14px; fill: currentColor; }
+
     /* ─── HERO ────────────────────────────────────────────────────────────── */
     .hero {
       min-height: 100vh;
@@ -600,13 +618,22 @@
 
 <!-- NAV -->
 <nav id="mainNav">
-  <div class="nav-brand">JLEM <em>Builders</em></div>
+  <a href="#home" class="nav-brand-link" aria-label="Back to top">
+    <div class="nav-brand">JLEM <em>Builders</em></div>
+  </a>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <a href="#contact" class="nav-cta">Get a Quote</a>
+  <div style="display:flex;align-items:center;gap:0.7rem;">
+    <a href="https://www.facebook.com/share/1BHfWLrduf/" target="_blank" rel="noopener noreferrer" class="nav-fb" aria-label="Visit our Facebook page">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.791-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+      </svg>
+    </a>
+    <a href="#contact" class="nav-cta">Get a Quote</a>
+  </div>
 </nav>
 
 <!-- HERO -->
