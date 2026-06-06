@@ -421,27 +421,19 @@
     .no-projects {
       grid-column: 1 / -1;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 5rem 2rem;
+      padding: 6rem 2rem;
       border: 1px dashed var(--g6);
-      gap: 1rem;
+      gap: 0.9rem;
     }
     .no-projects-icon {
-      width: 52px; height: 52px; color: var(--g6);
+      width: 44px; height: 44px; color: var(--g6);
     }
     .no-projects-icon svg { width: 100%; height: 100%; }
     .no-projects-title {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700; font-size: 1.1rem;
-      text-transform: uppercase; letter-spacing: 0.1em;
+      text-transform: uppercase; letter-spacing: 0.12em;
       color: var(--g5);
-    }
-    .no-projects-sub {
-      font-size: 0.72rem; color: var(--g6);
-      letter-spacing: 0.06em; text-align: center;
-    }
-    .no-projects-sub code {
-      font-family: monospace; color: var(--g5);
-      background: var(--g8); padding: 0.1rem 0.4rem;
     }
 
     .project-overlay {
@@ -947,7 +939,6 @@
           </svg>
         </div>
         <div class="no-projects-title">No Projects Yet</div>
-        <div class="no-projects-sub">Projects will appear here once photos are added via <code>images.js</code></div>
       </div>`;
   }
 
