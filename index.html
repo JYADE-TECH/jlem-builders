@@ -418,6 +418,32 @@
     }
     .project-card:hover .project-thumb-placeholder { background: var(--g6); }
 
+    .no-projects {
+      grid-column: 1 / -1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 5rem 2rem;
+      border: 1px dashed var(--g6);
+      gap: 1rem;
+    }
+    .no-projects-icon {
+      width: 52px; height: 52px; color: var(--g6);
+    }
+    .no-projects-icon svg { width: 100%; height: 100%; }
+    .no-projects-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; font-size: 1.1rem;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--g5);
+    }
+    .no-projects-sub {
+      font-size: 0.72rem; color: var(--g6);
+      letter-spacing: 0.06em; text-align: center;
+    }
+    .no-projects-sub code {
+      font-family: monospace; color: var(--g5);
+      background: var(--g8); padding: 0.1rem 0.4rem;
+    }
+
     .project-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.1) 55%);
@@ -576,9 +602,13 @@
     /* ─── FOOTER ──────────────────────────────────────────────────────────── */
     footer {
       padding: 1.6rem 3rem;
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; flex-direction: column; align-items: flex-start;
       border-top: 1px solid var(--line);
-      flex-wrap: wrap; gap: 1rem;
+      gap: 0.9rem;
+    }
+    .footer-top {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%;
     }
     .footer-brand {
       font-family: 'Barlow Condensed', sans-serif;
@@ -589,13 +619,12 @@
     .footer-watermark {
       display: flex; align-items: center; gap: 0.55rem;
       text-decoration: none;
-      opacity: 0.45; transition: opacity 0.25s;
+      opacity: 0.5; transition: opacity 0.25s;
     }
-    .footer-watermark:hover { opacity: 0.85; }
+    .footer-watermark:hover { opacity: 1; }
     .footer-watermark img {
-      width: 22px; height: 22px;
+      width: 28px; height: 28px;
       object-fit: contain;
-      filter: invert(1) brightness(0.7);
     }
     .footer-watermark-text {
       font-size: 0.58rem; font-weight: 500;
@@ -626,7 +655,8 @@
       .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
       .form-row { grid-template-columns: 1fr; }
       .lb-shell { padding: 3rem 1rem; }
-      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+      footer { padding: 1.5rem; }
+      .footer-top { flex-direction: column; gap: 0.4rem; align-items: flex-start; }
       .services-header { flex-direction: column; align-items: flex-start; }
     }
   </style>
@@ -773,8 +803,10 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-brand">JLEM Builders</div>
-  <div class="footer-copy">2025 &mdash; All-Around Construction &amp; Technical Services &mdash; Calumpit, Bulacan</div>
+  <div class="footer-top">
+    <div class="footer-brand">JLEM Builders</div>
+    <div class="footer-copy">2025 &mdash; All-Around Construction &amp; Technical Services &mdash; Calumpit, Bulacan</div>
+  </div>
   <a href="https://github.com/JYADE-TECH" target="_blank" rel="noopener noreferrer" class="footer-watermark" title="Designed by Jyade">
     <img src="assets/logo-jyade.png" alt="Jyade logo" />
     <span class="footer-watermark-text">Designed by Jyade</span>
@@ -886,7 +918,7 @@
     PROJECTS.forEach((p, idx) => {
       const abbr = p.title.split(' ').slice(0,2).map(w=>w[0]).join('');
       const thumb = p.cover
-        ? `<img src="${p.cover}" alt="${p.title}" loading="lazy" />`
+        ? `<img src="${p.cover}" alt="${p.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="project-thumb-placeholder" style="display:none;">${abbr}</div>`
         : `<div class="project-thumb-placeholder">${abbr}</div>`;
       const card = document.createElement('div');
       card.className = 'project-card';
@@ -905,10 +937,18 @@
       pgEl.appendChild(card);
     });
   } else {
-    pgEl.innerHTML = `<div style="grid-column:1/-1;padding:4rem 2rem;text-align:center;
-      color:var(--g5);font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;">
-      Projects will appear here once images are added to images.js
-    </div>`;
+    pgEl.innerHTML = `
+      <div class="no-projects">
+        <div class="no-projects-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="10" width="36" height="28" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="17" cy="20" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M6 32l9-8 7 6 5-4 9 8" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="no-projects-title">No Projects Yet</div>
+        <div class="no-projects-sub">Projects will appear here once photos are added via <code>images.js</code></div>
+      </div>`;
   }
 
   /* ── LIGHTBOX ─────────────────────────────────────────────────────────── */
