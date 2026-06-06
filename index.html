@@ -575,9 +575,10 @@
 
     /* ─── FOOTER ──────────────────────────────────────────────────────────── */
     footer {
-      padding: 2rem 3rem;
+      padding: 1.6rem 3rem;
       display: flex; align-items: center; justify-content: space-between;
       border-top: 1px solid var(--line);
+      flex-wrap: wrap; gap: 1rem;
     }
     .footer-brand {
       font-family: 'Barlow Condensed', sans-serif;
@@ -585,6 +586,22 @@
       letter-spacing: 0.1em; text-transform: uppercase; color: var(--g5);
     }
     .footer-copy { font-size: 0.65rem; color: var(--g6); letter-spacing: 0.08em; }
+    .footer-watermark {
+      display: flex; align-items: center; gap: 0.55rem;
+      text-decoration: none;
+      opacity: 0.45; transition: opacity 0.25s;
+    }
+    .footer-watermark:hover { opacity: 0.85; }
+    .footer-watermark img {
+      width: 22px; height: 22px;
+      object-fit: contain;
+      filter: invert(1) brightness(0.7);
+    }
+    .footer-watermark-text {
+      font-size: 0.58rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--g5);
+    }
 
     /* ─── ANIMATIONS ──────────────────────────────────────────────────────── */
     @keyframes fadeUp {
@@ -729,11 +746,11 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Full Name</label>
-            <input type="text" class="form-input" placeholder="Your name" />
+            <input type="text" id="fieldName" class="form-input" placeholder="Your name" />
           </div>
           <div class="form-group">
             <label class="form-label">Contact Number</label>
-            <input type="text" class="form-input" placeholder="09XX XXX XXXX" />
+            <input type="text" id="fieldPhone" class="form-input" placeholder="09XX XXX XXXX" />
           </div>
         </div>
 
@@ -746,7 +763,7 @@
 
         <div class="form-group">
           <label class="form-label">Project Details</label>
-          <textarea class="form-textarea" placeholder="Describe the work needed..."></textarea>
+          <textarea id="fieldDetails" class="form-textarea" placeholder="Describe the work needed..."></textarea>
         </div>
         <button class="btn btn-primary" id="submitBtn" style="align-self:flex-start;"><span>Send Inquiry</span></button>
       </div>
@@ -758,6 +775,10 @@
 <footer>
   <div class="footer-brand">JLEM Builders</div>
   <div class="footer-copy">2025 &mdash; All-Around Construction &amp; Technical Services &mdash; Calumpit, Bulacan</div>
+  <a href="https://github.com/JYADE-TECH" target="_blank" rel="noopener noreferrer" class="footer-watermark" title="Designed by Jyade">
+    <img src="assets/logo-jyade.png" alt="Jyade logo" />
+    <span class="footer-watermark-text">Designed by Jyade</span>
+  </a>
 </footer>
 
 <!-- LIGHTBOX -->
@@ -776,6 +797,7 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="images.js"></script>
 <script>
   /* ── DATA ─────────────────────────────────────────────────────────────── */
@@ -935,17 +957,61 @@
     if (e.key==='ArrowRight') step(1);
   });
 
-  /* ── SUBMIT ───────────────────────────────────────────────────────────── */
+  /* ── SUBMIT via EmailJS ───────────────────────────────────────────────── */
+  // EmailJS public key — service: gmail, template pre-configured to forward to justineyuri.deleon.work@gmail.com
+  emailjs.init("user_PLACEHOLDER_INIT"); // replaced at runtime — see README
+
   document.getElementById('submitBtn').addEventListener('click', function() {
-    const sp = this.querySelector('span');
-    sp.textContent = 'Inquiry Sent';
-    this.style.opacity = '0.6';
+    const sp      = this.querySelector('span');
+    const name    = document.getElementById('fieldName').value.trim();
+    const phone   = document.getElementById('fieldPhone').value.trim();
+    const details = document.getElementById('fieldDetails').value.trim();
+    const svcs    = [...selected].join(', ') || 'Not specified';
+
+    if (!name || !phone) {
+      sp.textContent = 'Please fill name & number';
+      setTimeout(() => { sp.textContent = 'Send Inquiry'; }, 2500);
+      return;
+    }
+
+    sp.textContent = 'Sending...';
     this.disabled = true;
-    setTimeout(() => {
-      sp.textContent = 'Send Inquiry';
-      this.style.opacity = '';
-      this.disabled = false;
-    }, 3000);
+
+    const params = {
+      from_name:    name,
+      phone:        phone,
+      services:     svcs,
+      message:      details || '(no details provided)',
+      to_email:     'justineyuri.deleon.work@gmail.com'
+    };
+
+    emailjs.send('service_jlem', 'template_jlem', params)
+      .then(() => {
+        sp.textContent = 'Inquiry Sent';
+        this.style.opacity = '0.6';
+        // clear form
+        document.getElementById('fieldName').value = '';
+        document.getElementById('fieldPhone').value = '';
+        document.getElementById('fieldDetails').value = '';
+        selected.clear();
+        document.querySelectorAll('.sp-chip.selected').forEach(c => c.classList.remove('selected'));
+        document.getElementById('selectedCount').textContent = '';
+        setTimeout(() => {
+          sp.textContent = 'Send Inquiry';
+          this.style.opacity = '';
+          this.disabled = false;
+        }, 3500);
+      })
+      .catch(() => {
+        // Fallback: open mailto link so the inquiry is never lost
+        const body = encodeURIComponent(
+          `Name: ${name}\nPhone: ${phone}\nServices: ${svcs}\n\nDetails:\n${details}`
+        );
+        window.open(`mailto:justineyuri.deleon.work@gmail.com?subject=JLEM Builders Inquiry from ${name}&body=${body}`);
+        sp.textContent = 'Send Inquiry';
+        this.style.opacity = '';
+        this.disabled = false;
+      });
   });
 
   /* ── NAV SCROLL ───────────────────────────────────────────────────────── */
